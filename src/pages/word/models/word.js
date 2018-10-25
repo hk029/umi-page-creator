@@ -1,5 +1,5 @@
 export default {
-  namespace: '<%= pageName %>',
+  namespace: 'word',
 
   state: {
     text: '',
@@ -7,7 +7,7 @@ export default {
 
   effects: {
     *fetch(_, { call, put }) {
-      const response = yield call(() => ' : is using Dva!');
+      const response = yield call(() => 'Awesome!');
       yield put({
         type: 'setText',
         payload: { text: response },
@@ -27,7 +27,7 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
-        if (pathname === '/<%= (curPath + pageName).toLowerCase()  %>') {
+        if (pathname === '/word') {
           dispatch({ type: 'fetch', payload: query });
         }
       });

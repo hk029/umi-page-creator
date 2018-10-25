@@ -12,7 +12,7 @@ const pageTpl = fs
   .readFileSync(path.resolve(__dirname, "./template/page.ejs"))
   .toString();
 const { log } = console;
-const srcDir = path.resolve(__dirname, "./src/pages");
+const srcDir = path.resolve(process.cwd(), "./src/pages");
 //  判断是否有src目录
 const isSrc = fs.existsSync(srcDir);
 if (!isSrc) {
@@ -39,9 +39,6 @@ const walk = dir => {
   return obj;
 };
 
-let obj = walk(srcDir);
-let curPath = "";
-
 /**
  * @name chooseDir
  * @description User can choose which directory to put their pages
@@ -49,7 +46,7 @@ let curPath = "";
  * @param {} dirs 目录列表（通过walk生成）
  * @param bool first 是否第一次进入
  */
-const chooseDir = (dirs, first = true) => {
+const chooseDir = (dirs, curPath, first = true) => {
   return inquirer
     .prompt([
       {
@@ -65,73 +62,96 @@ const chooseDir = (dirs, first = true) => {
     .then(ans => {
       if (ans.pageDir !== "/") {
         curPath += `${ans.pageDir}/`;
-        return subDir(dirs[ans.pageDir], false);
+        return chooseDir(dirs[ans.pageDir], curPath, false);
       }
-      return Promise.resolve(ans);
+      return Promise.resolve(curPath);
     });
 };
 
 /**
  *  main
  */
-chooseDir(obj)
-  .then(ans => {
-    log(curPath);
-    return inquirer.prompt([
-      {
-        type: "input",
-        name: "pageName",
-        message: "What is your page name?"
-      },
-      {
-        type: "confirm",
-        name: "isDir",
-        message: "Using separate folders?",
-        default: true
-      },
-      {
-        type: "confirm",
-        name: "dva",
-        message: "Using dva?",
-        default: true
-      },
-      {
-        type: "list",
-        name: "style",
-        message: "Choose your CSS Preprocessors",
-        choices: ["less", "scss", "css"],
-        default: "less"
+
+const createPage = async () => {
+  let dirs = walk(srcDir);
+  let curPath = "";
+  chooseDir(dirs, "")
+    .then(path => {
+      curPath = path;
+      log("curPath:", `src/pages/${curPath}`);
+      return inquirer.prompt([
+        {
+          type: "input",
+          name: "pageName",
+          message: "What is your page name?"
+        },
+        {
+          type: "confirm",
+          name: "isDir",
+          message: "Using separate folders?",
+          default: true
+        },
+        {
+          type: "confirm",
+          name: "dva",
+          message: "Using dva?",
+          default: true
+        },
+        {
+          type: "list",
+          name: "style",
+          message: "Choose your CSS Preprocessors",
+          choices: ["less", "scss", "css"],
+          default: "less"
+        }
+      ]);
+    })
+    .then(answers => {
+      let { pageName, dva, style, isDir } = answers;
+      let cap = pageName;
+      cap = cap.substring(0, 1).toUpperCase() + cap.substring(1);
+      let fileName = isDir ? "index" : pageName;
+      const dir = path.resolve(srcDir, `./${curPath}/${isDir ? pageName : ""}`);
+      // 如果当前目录是src，并且没有选择独立文件夹，那么model需要放到src/models里
+      const model = path.resolve(
+        dir,
+        `${!isDir && !curPath ? "../" : ""}models/${pageName}.js`
+      );
+      const page = path.resolve(dir, `${fileName}.jsx`);
+      const xcss = path.resolve(dir, `${fileName}.${style}`);
+      const modelText = ejs.render(modelTpl, { pageName, curPath });
+      const pageText = ejs.render(pageTpl, {
+        dva,
+        pageName,
+        css: `${fileName}.${style}`
+      });
+      // log(dir, page, model);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
       }
-    ]);
-  })
-  .then(answers => {
-    let { pageName, dva, style, isDir } = answers;
-    let cap = pageName;
-    cap = cap.substring(0, 1).toUpperCase() + cap.substring(1);
-    let fileName = isDir ? "index" : pageName;
-    const dir = path.resolve(srcDir, `./${curPath}/${isDir ? pageName : ""}`);
-    // 如果当前目录是src，并且没有选择独立文件夹，那么model需要放到src/models里
-    const model = path.resolve(
-      dir,
-      `${!isDir && !curPath && "../"}models/${pageName}.js`
-    );
-    const page = path.resolve(dir, `${fileName}.jsx`);
-    const xcss = path.resolve(dir, `${fileName}.${style}`);
-    const modelText = ejs.render(modelTpl, { pageName, curPath });
-    const pageText = ejs.render(pageTpl, {
-      dva,
-      pageName,
-      css: `${fileName}.${style}`
+      if (dva && !fs.existsSync(path.resolve(dir, "models"))) {
+        fs.mkdirSync(path.resolve(dir, "models"));
+      }
+      fs.writeFileSync(page, pageText);
+      fs.writeFileSync(xcss, ".container{}");
+      dva && fs.writeFileSync(model, modelText);
+      return inquirer.prompt([
+        {
+          type: "confirm",
+          name: "confirm",
+          message: "Continue creating new page?",
+          default: false
+        }
+      ]);
+    })
+    .then(answers => {
+      const { confirm } = answers;
+      if (confirm) {
+        return createPage();
+      }
+      log("All done!");
+      return 1;
     });
-    log(dir, page, model);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir);
-    }
-    if (dva && !fs.existsSync(path.resolve(dir, "models"))) {
-      fs.mkdirSync(path.resolve(dir, "models"));
-    }
-    fs.writeFileSync(page, pageText);
-    fs.writeFileSync(xcss, ".container{}");
-    dva && fs.writeFileSync(model, modelText);
-    log("all done!");
-  });
+};
+
+createPage();
