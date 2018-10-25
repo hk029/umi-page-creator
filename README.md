@@ -3,6 +3,12 @@ A command line tool to help you generate umi pages more efficiently.
 
 一个高效创建umi页面的CLI小工具
 
+# Feature 特点
+
+- CLi交互式创建页面
+- 可以自动生成页面和model模板
+- 可以选择是否页面使用dva
+
 # Installation 安装方法
 
 ```
