@@ -1,0 +1,31 @@
+{
+  "name": "umi-page-creator",
+  "version": "1.0.0",
+  "description": "A command line tool to help you generate umi pages more efficiently.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hk029/umi-page-creator"
+  },
+  "bin": {
+    "page": "./index.js"
+  },
+  "keywords": [
+    "cli",
+    "umi",
+    "page"
+  ],
+  "author": "HawKeye.Kai",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hk029/umi-page-creator/issues"
+  },
+  "homepage": "https://github.com/hk029/umi-page-creator#readme",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "inquirer": "^6.2.0"
+  }
+}

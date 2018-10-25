@@ -1,0 +1,24 @@
+<% let newName = pageName.substring(0, 1).toUpperCase() + pageName.substring(1);%>
+import React, { Component } from 'react'
+import styles from './<%=css%>'
+<% if (dva) { %>import { connect } from 'dva';
+@connect(({ <%= pageName %> }) => ({
+  <%= pageName %>,
+})) <% } %>
+class <%= newName %> extends Component {
+  render() {
+  <% if (dva) {%>const { <%= pageName %> } = this.props;
+  const { text } = <%= pageName %>;
+  <% } %>
+    return (
+      <div className={styles.container}>
+      hello <%= pageName %>
+      <% if (dva) {%>
+        {text}
+      <% } %>
+      </div>
+    )
+  }
+}
+
+export default <%= newName %>;
