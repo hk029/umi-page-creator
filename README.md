@@ -13,7 +13,7 @@ npm i umi-page-creator -g
 
 在任意umi项目中输入`page`命令就行了
 
-![](./static/1.gif)
+![20181025154045384596963.gif](http://easyread.top/20181025154045384596963.gif)
 
 
 
@@ -44,14 +44,16 @@ npm i umi-page-creator -g
     - hot  热门文章
 - profile 我的信息
 
-可以通过使用`umi-page-creator` 快速创建：![](./static/2.png)
+可以通过使用`umi-page-creator` 快速创建：
+
+![20181025154045386856856.png](http://easyread.top/20181025154045386856856.png)
 
 生成的目录结构如下：
 
-![](./static/3.png)
+![20181025154045388351259.png](http://easyread.top/20181025154045388351259.png)
 
 运行`npm start`可以看到实际结果：
 
-![](./static/4.png)
+![20181025154045389288696.png](http://easyread.top/20181025154045389288696.png)
 
-![](./static/5.png)
+![20181025154045390115196.png](http://easyread.top/20181025154045390115196.png)
