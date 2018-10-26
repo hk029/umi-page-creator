@@ -1,5 +1,6 @@
 <% let newName = pageName.substring(0, 1).toUpperCase() + pageName.substring(1);%>
 import React, { Component } from 'react'
+<% if (validation) {%>import PropTypes from 'prop-types';<%}%>
 import styles from './<%=css%>'
 <% if (dva) { %>import { connect } from 'dva';
 @connect(({ <%= pageName %> }) => ({
@@ -20,5 +21,13 @@ class <%= newName %> extends Component {
     )
   }
 }
+
+<% if (validation) {%><%= newName %>.propTypes = {
+  <% if (dva) {%><%= pageName %>: PropTypes.shape({}),<%}%>
+};
+<%= newName %>.defaultProps = {
+  <% if (dva) {%><%= pageName %>: {},<%}%>
+};
+<%}%>
 
 export default <%= newName %>;

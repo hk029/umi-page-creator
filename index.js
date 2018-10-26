@@ -88,13 +88,19 @@ const createPage = async () => {
         {
           type: "confirm",
           name: "isDir",
-          message: "Using separate folders?",
+          message: "Using separate folders? (default: yes)",
           default: true
         },
         {
           type: "confirm",
           name: "dva",
-          message: "Using dva?",
+          message: "Using dva? (default: yes)",
+          default: true
+        },
+        {
+          type: "confirm",
+          name: "validation",
+          message: "Using prop-types validation? (default: yes)",
           default: true
         },
         {
@@ -107,21 +113,23 @@ const createPage = async () => {
       ]);
     })
     .then(answers => {
-      let { pageName, dva, style, isDir } = answers;
+      let { pageName, dva, style, isDir, validation } = answers;
       let cap = pageName;
       cap = cap.substring(0, 1).toUpperCase() + cap.substring(1);
       let fileName = isDir ? "index" : pageName;
       const dir = path.resolve(srcDir, `./${curPath}/${isDir ? pageName : ""}`);
       // 如果当前目录是src，并且没有选择独立文件夹，那么model需要放到src/models里
-      const model = path.resolve(
+      const modelDir = path.resolve(
         dir,
-        `${!isDir && !curPath ? "../" : ""}models/${pageName}.js`
+        `${!isDir && !curPath ? "../" : ""}models`
       );
+      const model = path.resolve(modelDir, `${pageName}.js`);
       const page = path.resolve(dir, `${fileName}.jsx`);
       const xcss = path.resolve(dir, `${fileName}.${style}`);
       const modelText = ejs.render(modelTpl, { pageName, curPath });
       const pageText = ejs.render(pageTpl, {
         dva,
+        validation,
         pageName,
         css: `${fileName}.${style}`
       });
@@ -129,8 +137,8 @@ const createPage = async () => {
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir);
       }
-      if (dva && !fs.existsSync(path.resolve(dir, "models"))) {
-        fs.mkdirSync(path.resolve(dir, "models"));
+      if (dva && !fs.existsSync(modelDir)) {
+        fs.mkdirSync(path.resolve(modelDir));
       }
       fs.writeFileSync(page, pageText);
       fs.writeFileSync(xcss, ".container{}");
