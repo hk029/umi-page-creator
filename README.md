@@ -19,7 +19,7 @@ npm i umi-page-creator -g
 
 在任意umi项目中输入`page`命令就行了
 
-![20181025154045384596963.gif](http://easyread.top/20181025154045384596963.gif)
+![20181025154045384596963.gif](http://img.hksite.cn/20181025154045384596963.gif)
 
 
 
