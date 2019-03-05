@@ -8,9 +8,15 @@ const ejs = require("ejs");
 const modelTpl = fs
   .readFileSync(path.resolve(__dirname, "./template/model.ejs"))
   .toString();
+
 const pageTpl = fs
   .readFileSync(path.resolve(__dirname, "./template/page.ejs"))
   .toString();
+
+const pageFuncTpl = fs
+  .readFileSync(path.resolve(__dirname, "./template/page-function.ejs"))
+  .toString();
+
 const { log } = console;
 const srcDir = path.resolve(process.cwd(), "./src/pages");
 //  判断是否有src目录
@@ -93,6 +99,12 @@ const createPage = async () => {
         },
         {
           type: "confirm",
+          name: "isFunc",
+          message: "Using Function Components? (default: yes)",
+          default: true
+        },
+        {
+          type: "confirm",
           name: "dva",
           message: "Using dva? (default: yes)",
           default: true
@@ -113,7 +125,7 @@ const createPage = async () => {
       ]);
     })
     .then(answers => {
-      let { pageName, dva, style, isDir, validation } = answers;
+      let { pageName, dva, style, isDir, validation, isFunc } = answers;
       let cap = pageName;
       cap = cap.substring(0, 1).toUpperCase() + cap.substring(1);
       let fileName = isDir ? "index" : pageName;
@@ -127,7 +139,7 @@ const createPage = async () => {
       const page = path.resolve(dir, `${fileName}.jsx`);
       const xcss = path.resolve(dir, `${fileName}.${style}`);
       const modelText = ejs.render(modelTpl, { pageName, curPath });
-      const pageText = ejs.render(pageTpl, {
+      const pageText = ejs.render(isFunc ? pageFuncTpl : pageTpl , {
         dva,
         validation,
         pageName,
@@ -141,7 +153,7 @@ const createPage = async () => {
         fs.mkdirSync(path.resolve(modelDir));
       }
       fs.writeFileSync(page, pageText);
-      fs.writeFileSync(xcss, ".container{}");
+      fs.writeFileSync(xcss, ".container{\n\tdisplay: block;\n}");
       dva && fs.writeFileSync(model, modelText);
       return inquirer.prompt([
         {

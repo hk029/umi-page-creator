@@ -1,36 +1,36 @@
 export default {
-  namespace: '<%= pageName %>',
+    namespace: '<%= pageName %>',
 
-  state: {
-    text: '',
-  },
-
-  effects: {
-    *fetch(_, { call, put }) {
-      const response = yield call(() => ' : is using Dva!');
-      yield put({
-        type: 'setText',
-        payload: { text: response },
-      });
+    state: {
+        text: ''
     },
-  },
 
-  reducers: {
-    setText(state, { payload }) {
-      return {
-        ...state,
-        ...payload,
-      };
-    },
-  },
-
-  subscriptions: {
-    setup({ dispatch, history }) {
-      return history.listen(({ pathname, query }) => {
-        if (pathname === '/<%= (curPath + pageName).toLowerCase()  %>') {
-          dispatch({ type: 'fetch', payload: query });
+    effects: {
+        * fetch(_, { call, put }) {
+            const response = yield call(() => ' : is using Dva!');
+            yield put({
+                type: 'setText',
+                payload: { text: response }
+            });
         }
-      });
     },
-  },
+
+    reducers: {
+        setState(state, { payload }) {
+            return {
+                ...state,
+                ...payload
+            };
+        }
+    },
+
+    subscriptions: {
+        setup({ dispatch, history }) {
+            return history.listen(({ pathname, query }) => {
+                if (pathname === '/<%= (curPath + pageName).toLowerCase()  %>') {
+                    dispatch({ type: 'fetch', payload: query });
+                }
+            });
+        }
+    }
 };

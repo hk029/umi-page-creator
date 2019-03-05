@@ -1,0 +1,29 @@
+<% let newName = pageName.substring(0, 1).toUpperCase() + pageName.substring(1);%>
+import React from 'react';
+<% if (validation) {%>import PropTypes from 'prop-types';<%}%>
+<% if (dva) { %>import { connect } from 'dva';<% } %>
+
+function <%= newName %> (props) {
+    <% if (dva) {%>const { <%= pageName %> } = props;
+    const { text } = <%= pageName %>;<% } %>
+    return (
+        <div className={styles.container}>
+        hello <%= pageName %><% if (dva) {%> {text} <% } %>
+        </div>
+    )
+}
+
+<% if (validation) {%><%= newName %>.propTypes = {
+  <% if (dva) {%><%= pageName %>: PropTypes.shape({}),<%}%>
+};
+<%= newName %>.defaultProps = {
+  <% if (dva) {%><%= pageName %>: {},<%}%>
+};
+<%}%>
+
+<% if (dva) { %>
+export default connect(({ <%= pageName %> }) => ({
+  <%= pageName %>,
+}))(<%= pageName %>) <% } else {%>
+export default <%= newName %>;
+<% } %>;

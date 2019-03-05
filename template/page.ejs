@@ -2,32 +2,30 @@
 import React, { Component } from 'react'
 <% if (validation) {%>import PropTypes from 'prop-types';<%}%>
 import styles from './<%=css%>'
-<% if (dva) { %>import { connect } from 'dva';
-@connect(({ <%= pageName %> }) => ({
-  <%= pageName %>,
-})) <% } %>
+
 class <%= newName %> extends Component {
   render() {
-  <% if (dva) {%>const { <%= pageName %> } = this.props;
-  const { text } = <%= pageName %>;
-  <% } %>
+    <% if (dva) {%>const { <%= pageName %> } = this.props;
+    const { text } = <%= pageName %>;<% } %>
     return (
       <div className={styles.container}>
-      hello <%= pageName %>
-      <% if (dva) {%>
-        {text}
-      <% } %>
+      hello <%= pageName %> <% if (dva) {%> {text} <% } %>
       </div>
     )
   }
 }
 
 <% if (validation) {%><%= newName %>.propTypes = {
-  <% if (dva) {%><%= pageName %>: PropTypes.shape({}),<%}%>
+    <% if (dva) {%><%= pageName %>: PropTypes.shape({}),<%}%>
 };
 <%= newName %>.defaultProps = {
-  <% if (dva) {%><%= pageName %>: {},<%}%>
+    <% if (dva) {%><%= pageName %>: {},<%}%>
 };
 <%}%>
 
+<% if (dva) { %>import { connect } from 'dva';
+export default connect(({ <%= pageName %> }) => ({
+  <%= pageName %>,
+}))(<%= pageName %>) <% } else {%>
 export default <%= newName %>;
+<% } %>
