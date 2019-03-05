@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/hk029/umi-page-creator#readme",
   "dependencies": {
+    "dotenv": "^6.2.0",
     "ejs": "^2.6.1",
     "inquirer": "^6.2.0"
   }
