@@ -20,8 +20,8 @@ const pageFuncTpl = fs
 
 const { log } = console;
 
-const appRoot = process.env.APP_ROOT + '/pages' || './src/pages';
-const srcDir = path.resolve(process.cwd(), appRoot);
+const appRoot = process.env.APP_ROOT || './src/';
+const srcDir = path.resolve(process.cwd(), appRoot + '/pages/');
 //  判断是否有src目录
 const isSrc = fs.existsSync(srcDir);
 if (!isSrc) {

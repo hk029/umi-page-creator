@@ -9,7 +9,7 @@ export default {
         * fetch(_, { call, put }) {
             const response = yield call(() => ' : is using Dva!');
             yield put({
-                type: 'setText',
+                type: 'setState',
                 payload: { text: response }
             });
         }

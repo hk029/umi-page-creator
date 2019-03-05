@@ -19,9 +19,15 @@ npm i umi-page-creator -g
 
 在任意umi项目中输入`page`命令就行了（默认在项目根目录运行，根目录有`/src/pages`结构，如果没有，默认会查找.env里的`APP_ROOT`字段）
 
-![20181025154045384596963.gif](http://img.hksite.cn/20181025154045384596963.gif)
+![](http://img.hksite.cn/2019-03-05-page.gif)
 
+生成的index.jsx模板如下：
 
+![](http://img.hksite.cn/2019-03-05-121954.png)
+
+生成的modal模板如下：
+
+![](http://img.hksite.cn/2019-03-05-120016.png)
 
 # Options 选项
 
